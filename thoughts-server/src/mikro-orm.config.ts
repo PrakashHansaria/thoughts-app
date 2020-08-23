@@ -1,4 +1,5 @@
 import { Post } from "./entities/Post";
+import { User } from "./entities/User";
 import { __prod__ } from "./constants";
 import path from 'path'
 
@@ -10,7 +11,7 @@ export default {
     dbName: 'thoughts',
     user: 'postgres',
     password: 'dbRoot',
-    entities: [Post],
+    entities: [Post, User],
     type: 'postgresql',
     debug: !__prod__ ,
 } as const;
