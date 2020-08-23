@@ -1,15 +1,32 @@
+import 'reflect-metadata'
 import { MikroORM } from "@mikro-orm/core";
-import microConfig from './mikro-orm.config'
+import microConfig from './mikro-orm.config';
 import { Post } from "./entities/Post";
+import express from 'express';
+import {ApolloServer} from 'apollo-server-express';
+import {buildSchema} from 'type-graphql'
+import { HelloResolver } from "./resolvers/hello";
+import { PostResolver } from "./resolvers/post";
 
 const main = async () => {
     const orm = await MikroORM.init(microConfig);
     orm.getMigrator().up() //Run migrations before executing any db actions
-    // const post = orm.em.create(Post, {title: 'this is my first post'});
-    // await orm.em.persistAndFlush(post);
+    
+    const app = express();
 
-    const posts = await orm.em.find(Post, {})
-    console.log("Post-----",posts)
+    const apolloServer = new ApolloServer({
+        schema: await buildSchema({
+            resolvers: [HelloResolver, PostResolver],
+            validate: false
+        }),
+        context: () => ({ em: orm.em })
+    });
+
+    apolloServer.applyMiddleware({ app })
+
+    app.listen(5000, () => {
+        console.log("Starting  server on port 5000")
+    });
 }
 
 main()
