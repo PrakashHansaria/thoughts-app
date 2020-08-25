@@ -108,6 +108,7 @@ let UserResolver = class UserResolver {
                 yield em.persistAndFlush(user);
             }
             catch (err) {
+                console.log(err);
                 if (err.code === "23505") {
                     return {
                         errors: [
@@ -118,14 +119,6 @@ let UserResolver = class UserResolver {
                         ],
                     };
                 }
-                return {
-                    errors: [
-                        {
-                            field: "db",
-                            message: "cannot create user",
-                        },
-                    ],
-                };
             }
             req.session.userId = user.id;
             return {

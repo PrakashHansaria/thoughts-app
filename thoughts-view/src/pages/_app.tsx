@@ -1,16 +1,18 @@
-import { ThemeProvider, CSSReset, ColorModeProvider } from '@chakra-ui/core'
+import { ThemeProvider, CSSReset } from "@chakra-ui/core";
+import { Provider, createClient } from "urql";
+import theme from "../theme";
 
-import theme from '../theme'
+const client = createClient({ url: "http://localhost:5000/graphql" });
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }: any) {
   return (
-    <ThemeProvider theme={theme}>
-      <ColorModeProvider>
+    <Provider value={ client }>
+      <ThemeProvider theme={theme}>
         <CSSReset />
         <Component {...pageProps} />
-      </ColorModeProvider>
-    </ThemeProvider>
-  )
+      </ThemeProvider>
+    </Provider>
+  );
 }
 
-export default MyApp
+export default MyApp;
