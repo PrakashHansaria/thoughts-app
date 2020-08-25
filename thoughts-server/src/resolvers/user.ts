@@ -89,6 +89,7 @@ export class UserResolver {
     try {
       await em.persistAndFlush(user);
     } catch (err) {
+      console.log(err)
       if (err.code === "23505") {
         return {
           errors: [
@@ -99,17 +100,9 @@ export class UserResolver {
           ],
         };
       }
-
-      return {
-        errors: [
-          {
-            field: "db",
-            message: "cannot create user",
-          },
-        ],
-      };
     }
 
+    //create session when registered 
     req.session.userId = user.id;
 
     return {
@@ -145,7 +138,6 @@ export class UserResolver {
       };
     }
 
-    //create session when registered 
     req.session.userId = user.id;
 
     return {
