@@ -100,15 +100,23 @@ let UserResolver = class UserResolver {
                 };
             }
             const hashedPassword = yield argon2_1.default.hash(options.password);
-            const user = em.create(User_1.User, {
-                username: options.username,
-                password: hashedPassword,
-            });
+            let user;
             try {
-                yield em.persistAndFlush(user);
+                const result = yield em
+                    .createQueryBuilder(User_1.User)
+                    .getKnexQuery()
+                    .insert({
+                    username: options.username,
+                    password: hashedPassword,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                })
+                    .returning("*");
+                result[0].createdAt = result[0].created_at;
+                result[0].updatedAt = result[0].updated_at;
+                user = result[0];
             }
             catch (err) {
-                console.log(err);
                 if (err.code === "23505") {
                     return {
                         errors: [
@@ -134,7 +142,7 @@ let UserResolver = class UserResolver {
                     errors: [
                         {
                             field: "username",
-                            message: "username doesnot exist",
+                            message: "username doesn't exist",
                         },
                     ],
                 };

@@ -2,7 +2,12 @@ import { ThemeProvider, CSSReset } from "@chakra-ui/core";
 import { Provider, createClient } from "urql";
 import theme from "../theme";
 
-const client = createClient({ url: "http://localhost:5000/graphql" });
+const client = createClient({
+  url: "http://localhost:5000/graphql",
+  fetchOptions: {
+    credentials: "include",
+  },
+});
 
 function MyApp({ Component, pageProps }: any) {
   return (
