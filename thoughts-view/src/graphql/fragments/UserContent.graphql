@@ -1,0 +1,4 @@
+fragment UserContent on User{
+  id
+  username
+}
